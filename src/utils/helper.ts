@@ -1,4 +1,4 @@
-  import { Pawn } from "../utils/gameTypes";
+  import { Pawn } from "./gameTypes";
 
   // Calculate pawn size based on number of pawns
   export const getPawnSize = (pawns:Pawn[]) => {

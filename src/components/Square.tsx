@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pawn as PawnType } from '../utils/gameTypes';
-import { getPawnSize, getPawnGridClasses } from '../lib/helper';
+import { getPawnSize, getPawnGridClasses } from '../utils/helper';
 
 interface SquareProps {
   number: number;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Square from './Square';
 import { Snake, Ladder, Pawn as PawnType } from '../utils/gameTypes';
-import { getSquareCoordinates } from '../lib/helper';
+import { getSquareCoordinates } from '../utils/helper';
 
 interface BoardProps {
   snakes: Snake[];

@@ -91,7 +91,7 @@ export const calculateDestination = (
   ladders: Ladder[]
 ): number => {
   // Calculate new position after dice roll
-  let newPosition = currentPosition + diceValue;
+  const newPosition = currentPosition + diceValue;
   
   // Cannot exceed 100
   if (newPosition > 100) {
@@ -117,8 +117,8 @@ export const calculateDestination = (
 export const positionToCoordinates = (position: number): [number, number] => {
   // Convert to 0-based index
   const pos = position - 1;
-  let row = 9 - Math.floor(pos / 10);
-  let col = row % 2 === 0 ? pos % 10 : 9 - (pos % 10);
+  const row = 9 - Math.floor(pos / 10);
+  const col = row % 2 === 0 ? pos % 10 : 9 - (pos % 10);
   return [row, col];
 };
 

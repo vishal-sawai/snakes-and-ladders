@@ -1,6 +1,6 @@
 import React from 'react';
 import { Player } from '../utils/gameTypes';
-import { getColorForPlayer } from '../lib/helper';
+import { getColorForPlayer } from '../utils/helper';
 
 interface GameStatsProps {
   players: Player[];

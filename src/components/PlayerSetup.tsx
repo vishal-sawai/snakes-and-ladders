@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { getColorForPlayer } from '../lib/helper';
+import { getColorForPlayer } from '../utils/helper';
 
 interface PlayerSetupProps {
   onStart: (playerCount: number, difficulty: string) => void;
