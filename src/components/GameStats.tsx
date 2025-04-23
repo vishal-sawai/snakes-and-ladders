@@ -1,18 +1,16 @@
 import React from 'react';
-import { Player } from '../utils/gameTypes';
+import { Player, MoveHistoryEntry } from '../utils/gameTypes';
 import { getColorForPlayer } from '../utils/helper';
 
 interface GameStatsProps {
   players: Player[];
-  currentPlayerIndex: number;
-  moveHistory: any[];
+  moveHistory: MoveHistoryEntry[];
   turnCount: number;
   difficulty: string;
 }
 
 const GameStats: React.FC<GameStatsProps> = ({
   players,
-  currentPlayerIndex,
   moveHistory,
   turnCount,
   difficulty
@@ -20,7 +18,7 @@ const GameStats: React.FC<GameStatsProps> = ({
   return (
     <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-4 animate-fade-in border border-white border-opacity-20">
       <h2 className="text-xl font-bold mb-4 text-white">Game Stats</h2>
-      
+
       <div className="mb-4">
         <div className="flex justify-between text-white">
           <span>Turn:</span>
@@ -31,14 +29,14 @@ const GameStats: React.FC<GameStatsProps> = ({
           <span className="font-bold capitalize">{difficulty}</span>
         </div>
       </div>
-      
+
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2 text-white">Recent Moves</h3>
         {moveHistory.length > 0 ? (
           <div className="space-y-2 max-h-60 overflow-y-auto">
-            {moveHistory.map((move, index) => (
-              <div 
-                key={index} 
+            {[...moveHistory].reverse().map((move, index) => (
+              <div
+                key={index}
                 className="text-xs p-2 rounded bg-white bg-opacity-5 text-white border border-white border-opacity-10"
               >
                 <div className="font-semibold">{move.playerName}</div>
@@ -57,7 +55,7 @@ const GameStats: React.FC<GameStatsProps> = ({
           <p className="text-sm text-white text-opacity-70">No moves yet</p>
         )}
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-2 text-white">Player Rankings</h3>
         <div className="space-y-1">
@@ -70,7 +68,7 @@ const GameStats: React.FC<GameStatsProps> = ({
             .map((player, index) => {
               const maxPosition = Math.max(...player.pawns.map(p => p.position));
               const progress = Math.min(100, maxPosition);
-              
+
               return (
                 <div key={player.id} className="text-white">
                   <div className="flex justify-between items-center">
@@ -80,9 +78,9 @@ const GameStats: React.FC<GameStatsProps> = ({
                     <span className="text-xs">{progress}%</span>
                   </div>
                   <div className="w-full bg-white bg-opacity-20 rounded-full h-1.5 mt-1">
-                    <div 
-                      className={`h-1.5 rounded-full bg-${player.color}`} 
-                      style={{ 
+                    <div
+                      className={`h-1.5 rounded-full bg-${player.color}`}
+                      style={{
                         width: `${progress}%`,
                         backgroundColor: getColorForPlayer(player.color)
                       }}

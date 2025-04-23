@@ -113,15 +113,6 @@ export const calculateDestination = (
   return newPosition;
 };
 
-// Convert a 1D position (1-100) to 2D coordinates [row, col] (0-9, 0-9)
-export const positionToCoordinates = (position: number): [number, number] => {
-  // Convert to 0-based index
-  const pos = position - 1;
-  const row = 9 - Math.floor(pos / 10);
-  const col = row % 2 === 0 ? pos % 10 : 9 - (pos % 10);
-  return [row, col];
-};
-
 // Check if a player has won (any pawn reached square 100)
 export const checkWinner = (players: Player[]): Player | null => {
   for (const player of players) {
