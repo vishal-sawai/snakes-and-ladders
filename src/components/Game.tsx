@@ -17,7 +17,7 @@ import {
 } from '../utils/gameUtils';
 
 // Keys for localStorage
-const GAME_STATE_KEY = 'climb-and-slither-game-state';
+const GAME_STATE_KEY = 'Snakes-and-ladders';
 
 const initialState: GameState = {
   players: [],
@@ -93,6 +93,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       // Find the current player and selected pawn
       const currentPlayer = state.players[state.currentPlayerIndex];
       let selectedPawn = null;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       let selectedPawnIndex = -1;
       
       // Find and update the selected pawn

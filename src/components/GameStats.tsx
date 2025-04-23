@@ -1,5 +1,6 @@
 import React from 'react';
 import { Player } from '../utils/gameTypes';
+import { getColorForPlayer } from '../lib/helper';
 
 interface GameStatsProps {
   players: Player[];
@@ -95,18 +96,4 @@ const GameStats: React.FC<GameStatsProps> = ({
     </div>
   );
 };
-
-// Helper function to get CSS color for player
-const getColorForPlayer = (playerColor: string): string => {
-  const colorMap: Record<string, string> = {
-    player1: '#FF5252', // red
-    player2: '#4CAF50', // green
-    player3: '#2196F3', // blue
-    player4: '#FFC107', // yellow
-    player5: '#9C27B0'  // purple
-  };
-  
-  return colorMap[playerColor] || '#FFFFFF';
-};
-
 export default GameStats;

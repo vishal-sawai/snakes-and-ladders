@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from 'lucide-react';
+import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6,DicesIcon } from 'lucide-react';
 
 interface DiceProps {
   value: number | null;
@@ -17,7 +17,10 @@ const Dice: React.FC<DiceProps> = ({ value, onRoll, disabled }) => {
       case 4: return <Dice4 className="w-8 h-8 md:w-10 md:h-10" />;
       case 5: return <Dice5 className="w-8 h-8 md:w-10 md:h-10" />;
       case 6: return <Dice6 className="w-8 h-8 md:w-10 md:h-10" />;
-      default: return <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded border-2 border-gray-300"></div>;
+      default: return <DicesIcon className="w-8 h-8 md:w-10 md:h-10" />;
+      // default: return <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded border-2 border-gray-300">
+
+      // </div>;
     }
   };
 

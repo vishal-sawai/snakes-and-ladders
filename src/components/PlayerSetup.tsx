@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { getColorForPlayer } from '../lib/helper';
 
 interface PlayerSetupProps {
   onStart: (playerCount: number, difficulty: string) => void;
@@ -11,7 +12,7 @@ const PlayerSetup: React.FC<PlayerSetupProps> = ({ onStart }) => {
   
   return (
     <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-6 max-w-md w-full border border-white border-opacity-20">
-      <h2 className="text-2xl font-bold text-center mb-6 text-white">Climb & Slither</h2>
+      <h2 className="text-2xl font-bold text-center mb-6 text-white">Snakes And Ladder</h2>
       
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2 text-white">
@@ -61,7 +62,7 @@ const PlayerSetup: React.FC<PlayerSetupProps> = ({ onStart }) => {
           <div 
             key={index}
             className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg"
-            style={{ backgroundColor: getPlayerColor(`player${index + 1}`) }}
+            style={{ backgroundColor: getColorForPlayer(`player${index + 1}`) }}
           >
             P{index + 1}
           </div>
@@ -83,19 +84,6 @@ const PlayerSetup: React.FC<PlayerSetupProps> = ({ onStart }) => {
       </button>
     </div>
   );
-};
-
-// Helper function to get CSS color for player
-const getPlayerColor = (playerColor: string): string => {
-  const colorMap: Record<string, string> = {
-    player1: '#FF5252', // red
-    player2: '#4CAF50', // green
-    player3: '#2196F3', // blue
-    player4: '#FFC107', // yellow
-    player5: '#9C27B0'  // purple
-  };
-  
-  return colorMap[playerColor] || '#FFFFFF';
 };
 
 export default PlayerSetup;
