@@ -5,10 +5,11 @@ import { GameState } from "./gameTypes";
 // Calculate pawn size based on number of pawns
 export const getPawnSize = (pawns: Pawn[]) => {
   const count = pawns.length;
-  if (count <= 2) return "w-2.5 h-2.5 md:w-3.5 md:h-3.5";
-  if (count <= 4) return "w-2 h-2 md:w-3 md:h-3";
-  if (count <= 6) return "w-1.5 h-1.5 md:w-2.5 md:h-2.5";
-  return "w-1 h-1 md:w-2 md:h-2";
+  if (count <= 2) return "w-4 h-4 md:w-5 md:h-5";
+  if (count <= 4) return "w-3 h-3 md:w-4 md:h-4";
+  if (count <= 6) return "w-2.5 h-2.5 md:w-3.5 md:h-3.5";
+  if (count <= 10) return "w-2 h-2 md:w-3.5 md:h-3.5";
+  return "w-1 h-1 md:w-3 md:h-3.5";
 };
 
 // Determine grid layout based on number of pawns
@@ -47,11 +48,11 @@ export const getSquareCoordinates = (position: number) => {
 // Helper function to get CSS color for player
 export const getColorForPlayer = (playerColor: string): string => {
   const colorMap: Record<string, string> = {
-    player1: '#FF5252', // red
+    player1: '#3B82F6', // blue
     player2: '#4CAF50', // green
-    player3: '#2196F3', // blue
+    player3: '#EF4444', // red
     player4: '#FFC107', // yellow
-    player5: '#9C27B0'  // purple
+    player5: '#000000'  // purple
   };
 
   return colorMap[playerColor] || '#FFFFFF';

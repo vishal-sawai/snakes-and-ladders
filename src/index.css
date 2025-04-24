@@ -59,7 +59,7 @@
     /* Red */
     --player4: #F59E0B;
     /* Yellow */
-    --player5: #8B5CF6;
+    --player5: #000000;
     /* Purple */
     --snake: #EF4444;
     /* Red */
@@ -222,10 +222,5 @@
 
   .square-number {
     font-size: 0.6rem;
-  }
-
-  .pawn {
-    width: 6px;
-    height: 6px;
   }
 }
