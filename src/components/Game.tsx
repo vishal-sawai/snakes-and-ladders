@@ -1,166 +1,24 @@
-import React, { useReducer, useEffect } from 'react';
+// Game.tsx
+import React, { useEffect } from 'react';
 import Board from './Board';
 import PlayerInfo from './PlayerInfo';
 import WinnerModal from './WinnerModal';
 import PlayerSetup from './PlayerSetup';
 import GameStats from './GameStats';
 import GameControls from './GameControls';
-import { GameState, GameAction, Pawn } from '../utils/gameTypes';
-import {
-  generateSnakes,
-  generateLadders,
-  createPlayers,
-  calculateDestination,
-  checkWinner,
-  getRandomInt
-} from '../utils/gameUtils';
-import { saveGameState, loadSavedGameState, removeSavedGameState } from '../utils/helper';
-
-const initialState: GameState = {
-  players: [],
-  currentPlayerIndex: 0,
-  diceValue: null,
-  snakes: [],
-  ladders: [],
-  selectedPawnId: null,
-  winner: null,
-  gameStarted: false,
-  gameEnded: false,
-  moveHistory: [],
-  turnCount: 0,
-  difficulty: 'normal',
-};
-
-function gameReducer(state: GameState, action: GameAction): GameState {
-  switch (action.type) {
-    case 'START_GAME': {
-      // Adjust number of snakes and ladders based on difficulty
-      const difficulty = action.difficulty || 'normal';
-      let snakeCount = 9;
-      let ladderCount = 9;
-
-      if (difficulty === 'easy') {
-        snakeCount = 6;
-        ladderCount = 12;
-      } else if (difficulty === 'hard') {
-        snakeCount = 12;
-        ladderCount = 6;
-      }
-
-      const snakes = generateSnakes(snakeCount);
-      const ladders = generateLadders(ladderCount, snakes);
-      const players = createPlayers(action.players);
-
-      return {
-        ...state,
-        players,
-        snakes,
-        ladders,
-        gameStarted: true,
-        gameEnded: false,
-        winner: null,
-        currentPlayerIndex: 0,
-        diceValue: null,
-        selectedPawnId: null,
-        moveHistory: [],
-        turnCount: 0,
-        difficulty
-      };
-    }
-
-    case 'ROLL_DICE': {
-      return {
-        ...state,
-        diceValue: getRandomInt(1, 6)
-      };
-    }
-
-    case 'SELECT_PAWN': {
-      return {
-        ...state,
-        selectedPawnId: action.pawnId
-      };
-    }
-
-    case 'MOVE_PAWN': {
-      if (!state.selectedPawnId || state.diceValue === null) {
-        return state;
-      }
-
-      // Find the current player and selected pawn
-      const currentPlayer = state.players[state.currentPlayerIndex];
-      let selectedPawn: Pawn = {} as Pawn;
-
-
-      // Find and update the selected pawn
-      const updatedPlayers = state.players.map(player => {
-        const updatedPawns = player.pawns.map((pawn) => {
-          if (pawn.id === state.selectedPawnId) {
-            selectedPawn = pawn;
-            const newPosition = calculateDestination(
-              pawn.position,
-              state.diceValue as number,
-              state.snakes,
-              state.ladders
-            );
-            return { ...pawn, position: newPosition };
-          }
-          return pawn;
-        });
-
-        return { ...player, pawns: updatedPawns };
-      });
-
-      // Create move history entry
-      const moveEntry = {
-        playerId: currentPlayer.id,
-        playerName: currentPlayer.name,
-        pawnId: state.selectedPawnId,
-        diceValue: state.diceValue,
-        fromPosition: selectedPawn ? selectedPawn.position : 0,
-        toPosition: selectedPawn ? calculateDestination(
-          selectedPawn.position,
-          state.diceValue as number,
-          state.snakes,
-          state.ladders
-        ) : 0,
-        turn: state.turnCount
-      };
-
-      const winner = checkWinner(updatedPlayers);
-
-      return {
-        ...state,
-        players: updatedPlayers,
-        selectedPawnId: null,
-        winner,
-        gameEnded: winner !== null,
-        moveHistory: [...state.moveHistory, moveEntry]
-      };
-    }
-
-    case 'NEXT_TURN': {
-      return {
-        ...state,
-        currentPlayerIndex: (state.currentPlayerIndex + 1) % state.players.length,
-        diceValue: null,
-        turnCount: state.turnCount + 1
-      };
-    }
-
-    case 'RESET_GAME': {
-      return initialState;
-    }
-
-    default:
-      return state;
-  }
-}
-
+import { useGameState } from '../hooks/useGameState';
+import { saveGameState } from '../utils/helper';
+import { Player } from '../utils/gameTypes';
 
 const Game: React.FC = () => {
-  // Initialize with saved state or initial state
-  const [state, dispatch] = useReducer(gameReducer, loadSavedGameState() || initialState);
+  const {
+    state,
+    handleStartGame,
+    handleRollDice,
+    handlePawnSelect,
+    handleRestart,
+    allPawns
+  } = useGameState();
 
   const {
     players,
@@ -168,7 +26,6 @@ const Game: React.FC = () => {
     diceValue,
     snakes,
     ladders,
-    selectedPawnId,
     winner,
     gameStarted,
     gameEnded,
@@ -184,57 +41,12 @@ const Game: React.FC = () => {
     }
   }, [gameStarted, state]);
 
-  // Get all pawns for all players
-  const allPawns = players.flatMap(player => player.pawns);
-
   // Get current player
   const currentPlayer = players[currentPlayerIndex];
 
-  // Auto-move pawn and advance to next turn after pawn selection
-  useEffect(() => {
-    if (selectedPawnId) {
-      // Small delay for better UX
-      const timer = setTimeout(() => {
-        dispatch({ type: 'MOVE_PAWN' });
-
-        // Check if game ended after move
-        if (!gameEnded) {
-          const nextTurnTimer = setTimeout(() => {
-            dispatch({ type: 'NEXT_TURN' });
-          }, 500);
-
-          return () => clearTimeout(nextTurnTimer);
-        }
-      }, 500);
-
-      return () => clearTimeout(timer);
-    }
-  }, [selectedPawnId, gameEnded]);
-
-  // Handle game start
-  const handleStartGame = (playerCount: number, difficulty: string) => {
-    dispatch({ type: 'START_GAME', players: playerCount, difficulty });
-  };
-
-  // Handle dice roll
-  const handleRollDice = () => {
-    dispatch({ type: 'ROLL_DICE' });
-  };
-
-  // Handle pawn selection
-  const handlePawnSelect = (pawnId: string) => {
-    dispatch({ type: 'SELECT_PAWN', pawnId });
-  };
-
-  // Handle game restart
-  const handleRestart = () => {
-    // Reset game state and clear saved state
-    removeSavedGameState();
-    dispatch({ type: 'RESET_GAME' });
-  };
-
   // Determine if the current player can roll the dice
   const canRollDice = gameStarted && !gameEnded && diceValue === null;
+
   if (!gameStarted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-indigo-800 p-4">
@@ -267,19 +79,11 @@ const Game: React.FC = () => {
 
         {/* Right sidebar - Game controls */}
         <div className="w-full md:w-72 flex flex-col gap-4 game-controls">
-          <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-4 mb-4 animate-fade-in border border-white border-opacity-20">
-            <h2 className="text-xl font-bold mb-4 text-white">Players</h2>
-            <div className="space-y-2">
-              {players.map((player, index) => (
-                <PlayerInfo
-                  key={player.id}
-                  player={player}
-                  isCurrentPlayer={index === currentPlayerIndex}
-                  diceValue={index === currentPlayerIndex ? diceValue : null}
-                />
-              ))}
-            </div>
-          </div>
+          <PlayersPanel
+            players={players}
+            currentPlayerIndex={currentPlayerIndex}
+            diceValue={diceValue}
+          />
 
           <GameControls
             currentPlayer={currentPlayer}
@@ -302,6 +106,29 @@ const Game: React.FC = () => {
           turnCount={turnCount}
         />
       )}
+    </div>
+  );
+};
+
+// Extract players panel into its own component
+const PlayersPanel: React.FC<{
+  players: Player[];
+  currentPlayerIndex: number;
+  diceValue: number | null;
+}> = ({ players, currentPlayerIndex, diceValue }) => {
+  return (
+    <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-4 mb-4 animate-fade-in border border-white border-opacity-20">
+      <h2 className="text-xl font-bold mb-4 text-white">Players</h2>
+      <div className="space-y-2">
+        {players.map((player, index) => (
+          <PlayerInfo
+            key={player.id}
+            player={player}
+            isCurrentPlayer={index === currentPlayerIndex}
+            diceValue={index === currentPlayerIndex ? diceValue : null}
+          />
+        ))}
+      </div>
     </div>
   );
 };
