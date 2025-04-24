@@ -1,7 +1,6 @@
 import React, { useReducer, useEffect } from 'react';
 import Board from './Board';
 import PlayerInfo from './PlayerInfo';
-import PawnSelector from './PawnSelector';
 import WinnerModal from './WinnerModal';
 import PlayerSetup from './PlayerSetup';
 import GameStats from './GameStats';
@@ -236,13 +235,6 @@ const Game: React.FC = () => {
 
   // Determine if the current player can roll the dice
   const canRollDice = gameStarted && !gameEnded && diceValue === null;
-
-  // Get the current player's pawns for selection
-  const currentPlayerPawns = currentPlayer?.pawns || [];
-
-  // Show pawn selector if dice has been rolled but no pawn selected yet
-  const showPawnSelector = diceValue !== null && selectedPawnId === null && !gameEnded;
-
   if (!gameStarted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-indigo-800 p-4">
@@ -296,18 +288,10 @@ const Game: React.FC = () => {
             onRestart={handleRestart}
             canRollDice={canRollDice}
             gameEnded={gameEnded}
+            onSelectPawn={diceValue !== null ? handlePawnSelect : undefined}
           />
         </div>
       </div>
-
-      {/* Pawn selector modal */}
-      {showPawnSelector && (
-        <PawnSelector
-          pawns={currentPlayerPawns}
-          onSelect={handlePawnSelect}
-          diceValue={diceValue as number}
-        />
-      )}
 
       {/* Winner modal */}
       {winner && (
