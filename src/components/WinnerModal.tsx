@@ -14,7 +14,7 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ winner, onRestart, moveHistor
   // Get the winning move from history
   const winningMove = moveHistory.find(move => move.playerId === winner.id && move.toPosition === 100);
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10">
+    <div className="fixed inset-0 flex items-center justify-center" style={{ zIndex: 1000 }}>
       <div className="absolute inset-0 bg-black bg-opacity-70" onClick={onRestart} />
       <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg shadow-xl p-6 z-20 max-w-md w-full border border-white border-opacity-20">
         <div className="text-center">
